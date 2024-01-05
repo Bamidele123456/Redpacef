@@ -51,14 +51,14 @@
                         <p>Choose a one-time amount</p>
                         <div class="payments">
                             <div class="buttons">
-                            <button type="button" onclick="updateDonateAmount(50)">$50</button>
-                            <button type="button" onclick="updateDonateAmount(100)">$100</button>
-                            <button type="button" onclick="updateDonateAmount(150)">$150</button>
-                            <button type="button" onclick="updateDonateAmount(200)">$200</button>
+                            <button  onclick="updateDonateAmount(50)">$50</button>
+                            <button  onclick="updateDonateAmount(100)">$100</button>
+                            <button  onclick="updateDonateAmount(150)">$150</button>
+                            <button  onclick="updateDonateAmount(200)">$200</button>
                             </div>
                         </div>
-                        <input class="input" type="number" placeholder="If you wish to donate more, please enter the amount" style="font-weight: bold; vertical-align: middle; line-height: 1.5; text-align: center;">
-                        <button type="submit" class="submit" id="donateButton">Donate</button>
+                        <input class="input" id="customAmountInput" type="number" placeholder="If you wish to donate more, please enter the amount" style= "font-size: 17px; font-weight: bold; vertical-align: middle; line-height: 1.5; text-align: center;">
+                        <button  class="submit" id="donateButton" onclick="updatebutton()">Donate</button>
                     </div>
                 </div>
                 <div class="donate-right"><img src="Images/IMG-20231026-WA0036.jpg" alt=""></div>
@@ -67,12 +67,12 @@
     </section>
     
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            updateDonateAmount(50);
-        });
+        function updatebutton() {
+        var customAmount = document.getElementById('customAmountInput').value;
+        document.getElementById('donateAmountInput').value = customAmount;
+    }
     
         function updateDonateAmount(amount) {
-            document.getElementById('donateButton').innerText = `Donate $${amount}`;
             document.getElementById('donateAmountInput').value = amount;
         }
     </script>
