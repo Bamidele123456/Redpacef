@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://js.paystack.co/v2/inline.js"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Mansalva&display=swap" rel="stylesheet">
@@ -21,10 +23,10 @@
     <nav>
         <a class="logo-link" href="index.html"><img src="Images/logo.jpg" alt=""></a>
         <ul class="donate-list">
-            <li data-aos="fade-up" data-aos-duration="600"><a href="index.html">Our Works</a></li>
-            <li data-aos="fade-up" data-aos-duration="200"><a href="index.html">About us</a></li>
-            <li data-aos="fade-up" data-aos-duration="600"><a href="index.html">Our Team</a></li>
-            <li data-aos="fade-up" data-aos-duration="400"><a href="index.html">Contact Us</a></li>
+            <li data-aos="fade-up" data-aos-duration="600"><a href="index.html#works">Our Works</a></li>
+            <li data-aos="fade-up" data-aos-duration="200"><a href="index.html#About">About us</a></li>
+            <li data-aos="fade-up" data-aos-duration="600"><a href="index.html#team">Our Team</a></li>
+            <li data-aos="fade-up" data-aos-duration="400"><a href="index.html#contact">Contact Us</a></li>
             <a class="donate-btn btn-donate" href="donate.html">Donate</a>
         </ul>
         <a class="donate-btn" href="donate.html">Donate</a>
@@ -33,47 +35,72 @@
 
 
     <section class="donate">
-        <form method="POST" action="https://checkout.flutterwave.com/v3/hosted/pay">
-            <input type="hidden" name="public_key" value="FLWPUBK_TEST-1562db14c4d0e092f5b739f0e7821e74-X" />
-            <input type="hidden" name="customer[email]" value="test@mailnator.com" />
-            <input type="hidden" name="customer[name]" value="Ayomide Jimi-Oni" />
-            <input type="hidden" name="tx_ref" value="txref-81123" />
-            <input type="hidden" name="amount" id="donateAmountInput" value="50">
-            <input type="hidden" name="currency" value="USD" />
-            <input type="hidden" name="meta[source]" value="docs-html-test" />
-            <h1>DONATE NOW</h1>
-            <h2>Your contributions are impactful</h2>
-            <div class="donate-container">
-                <div class="donate-left">
-                    <p>The solutions are within reach. Each and every donation to RedpaceF helps change the world.</p>
-                    <div class="donate-left-box">
-                        <span class="once">One-Time</span>
-                        <p>Choose a one-time amount</p>
-                        <div class="payments">
-                            <div class="buttons">
-                            <button  onclick="updateDonateAmount(50)">$50</button>
-                            <button  onclick="updateDonateAmount(100)">$100</button>
-                            <button  onclick="updateDonateAmount(150)">$150</button>
-                            <button  onclick="updateDonateAmount(200)">$200</button>
-                            </div>
+        <h2>Your contributions are impactful</h2>
+        <div class="donate-container">
+            <div class="donate-left">
+                <p>The solutions are within reach. Each and every donation to RedpaceF helps change the world.</p>
+                <div class="donate-left-box">
+                    <span class="once">One-Time</span>
+                    <p>Choose a one-time amount</p>
+                    <div class="payments">
+                        <div class="buttons">
+                            <button onclick="updateDonateAmount(50)">$50</button>
+                            <button onclick="updateDonateAmount(100)">$100</button>
+                            <button onclick="updateDonateAmount(150)">$150</button>
+                            <button onclick="updateDonateAmount(200)">$200</button>
                         </div>
-                        <input class="input" id="customAmountInput" type="number" placeholder="If you wish to donate more, please enter the amount" style= "font-size: 17px; font-weight: bold; vertical-align: middle; line-height: 1.5; text-align: center;">
-                        <button  class="submit" id="donateButton" onclick="updatebutton()">Donate</button>
                     </div>
+                    <input 
+                        class="input" 
+                        id="customAmountInput" 
+                        type="number" 
+                        placeholder="If you wish to donate more, please enter the amount" 
+                        style="font-size: 17px; font-weight: bold; vertical-align: middle; line-height: 1.5; text-align: center;">
+                    <button class="submit" id="donateButton" onclick="processDonation()">Donate</button>
                 </div>
-                <div class="donate-right"><img src="Images/IMG-20231026-WA0036.jpg" alt=""></div>
             </div>
-        </form>
+            <div class="donate-right">
+                <img src="Images/IMG-20231026-WA0036.jpg" alt="">
+            </div>
+        </div>
     </section>
     
     <script>
-        function updatebutton() {
-        var customAmount = document.getElementById('customAmountInput').value;
-        document.getElementById('donateAmountInput').value = customAmount;
-    }
-    
+        // Function to update the donate amount based on button clicks
         function updateDonateAmount(amount) {
-            document.getElementById('donateAmountInput').value = amount;
+            document.getElementById('customAmountInput').value = amount;
+        }
+    
+        // Function to process the donation
+        function processDonation() {
+            // Get the amount from the input field
+            const customAmount = document.getElementById('customAmountInput').value;
+    
+            if (!customAmount || customAmount <= 0) {
+                alert("Please enter a valid donation amount.");
+                return;
+            }
+            console.log(customAmount)
+    
+            // Convert amount to cents (Paystack expects the amount in kobo/cents)
+            const amountInCents = customAmount * 160000;
+            console.log(amountInCents)
+    
+            // Create a Paystack transaction
+            const handler = PaystackPop.setup({
+                key: 'pk_test_4152ceb092158dfe55b0b92a913a26820ed9ab7d', // Your Paystack public key
+                email: 'sample@email.com', // Replace with dynamic email if necessary
+                amount: amountInCents,
+                currency: "NGN", // Change currency if needed
+                onClose: function() {
+                    alert('Transaction was cancelled.');
+                },
+                callback: function(response) {
+                    alert('Payment successful! Reference: ' + response.reference);
+                }
+            });
+    
+            handler.openIframe();
         }
     </script>
     
