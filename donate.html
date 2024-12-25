@@ -71,8 +71,22 @@
             document.getElementById('customAmountInput').value = amount;
         }
     
+        // Function to get the current Dollar to Naira exchange rate
+        async function getDollarRate() {
+            try {
+                const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD'); // Example API
+                const data = await response.json();
+                const nairaRate = data.rates.NGN; // Get NGN rate
+                console.log("Current Dollar to Naira Rate:", nairaRate);
+                return nairaRate;
+            } catch (error) {
+                console.error("Error fetching exchange rate:", error);
+                return 1700;
+            }
+        }
+    
         // Function to process the donation
-        function processDonation() {
+        async function processDonation() {
             // Get the amount from the input field
             const customAmount = document.getElementById('customAmountInput').value;
     
@@ -80,18 +94,27 @@
                 alert("Please enter a valid donation amount.");
                 return;
             }
-            console.log(customAmount)
     
-            // Convert amount to cents (Paystack expects the amount in kobo/cents)
-            const amountInCents = customAmount * 160000;
-            console.log(amountInCents)
+            console.log("Entered Amount in Dollars:", customAmount);
+    
+            // Fetch the current exchange rate
+            const rate = await getDollarRate();
+    
+            if (!rate) {
+                alert("Failed to fetch the exchange rate. Please try again later.");
+                return;
+            }
+    
+            // Convert amount to Naira (and then to Kobo for Paystack)
+            const amountInCents = Math.round(customAmount * rate * 100); // Multiply by 100 for Kobo
+            console.log("Amount in Kobo (Naira x 100):", amountInCents);
     
             // Create a Paystack transaction
             const handler = PaystackPop.setup({
-                key: 'pk_test_4152ceb092158dfe55b0b92a913a26820ed9ab7d', // Your Paystack public key
+                key: 'pk_live_627e0ab385d7d142b8bc6f2df6e929e8fd943def', // Your Paystack public key
                 email: 'sample@email.com', // Replace with dynamic email if necessary
                 amount: amountInCents,
-                currency: "NGN", // Change currency if needed
+                currency: "NGN", // Paystack currency
                 onClose: function() {
                     alert('Transaction was cancelled.');
                 },
