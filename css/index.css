@@ -446,6 +446,7 @@ button:hover {
     display: block;
     gap: 20px;
     width: 50%;
+    object-fit: cover;
 }
 .rhs-top {
     display: flex;
@@ -460,7 +461,7 @@ button:hover {
     width: 100%;
     padding: 10px;
     background-color: #fff;
-    height: 250px;
+    height: 350px;
     object-fit: cover;
     object-position: 50% 20%;
 }
